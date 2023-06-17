@@ -3,12 +3,17 @@ import "bootstrap/dist/css/bootstrap.css";
 
 function App() {
   //Getting field values
+
+  //Confirming password and confirm password are the same
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordValid, setPasswordValid] = useState(true);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const name = event.target.elements.name.value;
     const username = event.target.elements.username.value;
     const password = event.target.elements.password.value;
-    const confirmpassword = event.target.elements.confirmpassword.value;
+    const confirmPassword = event.target.elements.confirmPassword.value;
     const language = event.target.elements.language.value;
     const mobile = event.target.elements.mobile.value;
 
@@ -17,10 +22,20 @@ function App() {
       name,
       username,
       password,
-      confirmpassword,
+      confirmPassword,
       language,
       mobile,
     };
+
+    if (password !== confirmPassword) {
+      // Password and confirm password do not match
+      setPasswordError("Passwords do not match");
+      setPasswordValid(false);
+      return;
+    } else {
+      setPasswordError("");
+      setPasswordValid(true);
+    }
 
     // Perform username validation
     // Make a POST request to the server to validate the username
@@ -62,6 +77,27 @@ function App() {
       .catch((error) => {
         console.error("Error validating username:", error);
       });
+
+    // Make a POST request to the server to save the form data
+    if (passwordValid) {
+      fetch("http://localhost:5000/submit-form", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          // Handle the response from the server
+          // You can display a success message or perform any other actions here
+        })
+        .catch((error) => {
+          console.error("Error submitting form:", error);
+          // Handle the error, display an error message, etc.
+        });
+    }
   };
 
   return (
@@ -79,7 +115,7 @@ function App() {
         <label>
           Password:
           <input
-            class="mt-3"
+            className={`mt-3 ${!passwordValid ? "is-invalid" : ""}`}
             type="password"
             id="password"
             required
@@ -89,7 +125,15 @@ function App() {
         </label>
         <label>
           Confirm Password:
-          <input class="mt-3" type="password" id="confirmpassword" required />
+          <input
+            className={`mt-3 ${!passwordValid ? "is-invalid" : ""}`}
+            type="password"
+            id="confirmPassword"
+            required
+          />
+          {!passwordValid && (
+            <div className="invalid-feedback">{passwordError}</div>
+          )}
         </label>
         <label>
           Language:
