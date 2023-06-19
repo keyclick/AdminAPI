@@ -1,4 +1,10 @@
 import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
+import VerificationPage from "./VerificationPage.jsx";
+import LoginPage from "./LoginPage.jsx";
+
+import LoginDetailsPage from "./LoginDetailsPage.jsx";
 import "bootstrap/dist/css/bootstrap.css";
 
 function App() {
@@ -64,6 +70,9 @@ function App() {
               console.log(data);
               // Handle the response from the server
               // You can display a success message or perform any other actions here
+              if (data.message === "Form data saved successfully") {
+                window.location.href = "/verify-account"; // Redirect to the verification page
+              }
             })
             .catch((error) => {
               console.error("Error submitting form:", error);
@@ -78,77 +87,91 @@ function App() {
         console.error("Error validating username:", error);
       });
 
-    // Make a POST request to the server to save the form data
-    if (passwordValid) {
-      fetch("http://localhost:5000/submit-form", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          // Handle the response from the server
-          // You can display a success message or perform any other actions here
-        })
-        .catch((error) => {
-          console.error("Error submitting form:", error);
-          // Handle the error, display an error message, etc.
-        });
-    }
+    // // Make a POST request to the server to save the form data
+    // if (passwordValid) {
+    //   fetch("http://localhost:5000/submit-form", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(formData),
+    //   })
+    //     .then((response) => response.json())
+    //     .then((data) => {
+    //       console.log(data);
+    //       // Handle the response from the server
+    //       // You can display a success message or perform any other actions here
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error submitting form:", error);
+    //       // Handle the error, display an error message, etc.
+    //     });
+    // }
   };
 
   return (
-    <div>
-      <h1>Registration Form</h1>
-      <form onSubmit={handleSubmit} class="d-flex flex-column mb-3">
-        <label>
-          Name:
-          <input class="mt-3" type="text" id="name" required />
-        </label>
-        <label>
-          Username:
-          <input class="mt-3" type="email" id="username" required />
-        </label>
-        <label>
-          Password:
-          <input
-            className={`mt-3 ${!passwordValid ? "is-invalid" : ""}`}
-            type="password"
-            id="password"
-            required
-            pattern=".{8,}"
-            title="Password must be at least 8 characters long"
+    <Router>
+      <div>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <form onSubmit={handleSubmit} className="d-flex flex-column mb-3">
+                <h1>Registration Form</h1>
+
+                <label>
+                  Name:
+                  <input className="mt-3" type="text" id="name" required />
+                </label>
+                <label>
+                  Username:
+                  <input className="mt-3" type="email" id="username" required />
+                </label>
+                <label>
+                  Password:
+                  <input
+                    className={`mt-3 ${!passwordValid ? "is-invalid" : ""}`}
+                    type="password"
+                    id="password"
+                    required
+                    pattern=".{8,}"
+                    title="Password must be at least 8 characters long"
+                  />
+                </label>
+                <label>
+                  Confirm Password:
+                  <input
+                    className={`mt-3 ${!passwordValid ? "is-invalid" : ""}`}
+                    type="password"
+                    id="confirmPassword"
+                    required
+                  />
+                  {!passwordValid && (
+                    <div className="invalid-feedback">{passwordError}</div>
+                  )}
+                </label>
+                <label>
+                  Language:
+                  <select className="mt-3" name="language" id="language">
+                    <option value="ENG">ENG</option>
+                    <option value="DE">DE</option>
+                  </select>
+                </label>
+                <label>
+                  Mobile:
+                  <input className="mt-3" type="number" id="mobile" />
+                </label>
+                <input type="submit" value="Submit" className="mt-3 btn-sm" />
+              </form>
+            }
           />
-        </label>
-        <label>
-          Confirm Password:
-          <input
-            className={`mt-3 ${!passwordValid ? "is-invalid" : ""}`}
-            type="password"
-            id="confirmPassword"
-            required
-          />
-          {!passwordValid && (
-            <div className="invalid-feedback">{passwordError}</div>
-          )}
-        </label>
-        <label>
-          Language:
-          <select class="mt-3" name="language" id="language">
-            <option value="ENG">ENG</option>
-            <option value="DE">DE</option>
-          </select>
-        </label>
-        <label>
-          Mobile:
-          <input class="mt-3" type="number" id="mobile" />
-        </label>
-        <input type="submit" value="Submit" class="mt-3 btn-sm" />
-      </form>
-    </div>
+          <Route path="/verify-account" element={<VerificationPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login-details/:username" element={<LoginDetailsPage />} />
+          
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
