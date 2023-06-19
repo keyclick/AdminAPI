@@ -1,13 +1,26 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+// import { username, setUserDetails } from "./server";
 
 import VerificationPage from "./VerificationPage.jsx";
 import LoginPage from "./LoginPage.jsx";
-
+import Admin from "./Admin.jsx";
 import LoginDetailsPage from "./LoginDetailsPage.jsx";
 import "bootstrap/dist/css/bootstrap.css";
 
 function App() {
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     const response = await fetch(
+  //       `http://localhost:5000/user-details/${username}`,
+  //       { method: "GET" }
+  //     );
+  //     const data = await response.json();
+  //     setUserDetails(data);
+  //   };
+  //   fetchUserData();
+  // }, [username]);
+
   //Getting field values
 
   //Confirming password and confirm password are the same
@@ -165,10 +178,13 @@ function App() {
               </form>
             }
           />
+          <Route path="/admin" element={<Admin />} />
           <Route path="/verify-account" element={<VerificationPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/login-details/:username" element={<LoginDetailsPage />} />
-          
+          <Route
+            path="/login-details/:username"
+            element={<LoginDetailsPage />}
+          />
         </Routes>
       </div>
     </Router>

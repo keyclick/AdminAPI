@@ -183,7 +183,27 @@ app.get("/user-details/:username", (req, res) => {
         res.status(500).json({ message: "Error retrieving username's data" });
       } else {
         console.log("Username data retrieved successfully");
-        
+        console.log(result);
+        res.status(200).json(result);
+      }
+    }
+  );
+});
+
+app.get("/users", (req, res) => {
+  console.log("ADMIN ACESS: All users data retrieved successfully");
+
+  connection.query(
+    "SELECT * FROM `formdata`",
+    [req.params.username],
+    (error, result) => {
+      if (error) {
+        console.error("ADMIN ACESS: Error retrieving username's data:", error);
+        res
+          .status(500)
+          .json({ message: "ADMIN ACESS: Error retrieving username's data" });
+      } else {
+        console.log("ADMIN ACESS: Username data retrieved successfully");
         console.log(result);
         res.status(200).json(result);
       }

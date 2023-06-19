@@ -8,11 +8,11 @@ const LoginDetailsPage = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const response = await fetch(
-        "http://localhost:5000/user-details/${username}",
+        `http://localhost:5000/user-details/${username}`,
         { method: "GET" }
       );
       const data = await response.json();
-      setUserDetails(data);
+      setUserDetails(data[0]); //LIsting out the elements in the object VERY IMPORTANTE
     };
     fetchUserData();
   }, [username]);
@@ -23,7 +23,7 @@ const LoginDetailsPage = () => {
 
   return (
     <div>
-      <div>{JSON.stringify(userDetails)}</div>
+      {/* <div>{JSON.stringify(userDetails)}</div> */}
       <h1>Login Details Page</h1>
       <div>
         <strong>Name:</strong> {userDetails.name}

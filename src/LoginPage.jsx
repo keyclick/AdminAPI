@@ -15,28 +15,34 @@ const LoginPage = () => {
       username,
       password,
     };
-
-    // Make a POST request to the server to check the credentials
-    fetch("http://localhost:5000/check-credentials", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.message === "Credentials are valid") {
-          // Credentials are valid, navigate to LoginDetailsPage with the username as a parameter
-          navigate(`/login-details/${username}`);
-        } else {
-          // Invalid credentials, display an error message
-          setLoginError("Invalid username or password");
-        }
+    
+    //ADMIN CASE
+    if (username === "admin@gmail.com" && password === "12345admin") {
+      // Redirect to Admin.jsx
+      navigate("/Admin");
+    } else {
+      // Make a POST request to the server to check the credentials
+      fetch("http://localhost:5000/check-credentials", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       })
-      .catch((error) => {
-        console.error("Error checking credentials:", error);
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.message === "Credentials are valid") {
+            // Credentials are valid, navigate to LoginDetailsPage with the username as a parameter
+            navigate(`/login-details/${username}`);
+          } else {
+            // Invalid credentials, display an error message
+            setLoginError("Invalid username or password");
+          }
+        })
+        .catch((error) => {
+          console.error("Error checking credentials:", error);
+        });
+    }
   };
 
   return (
